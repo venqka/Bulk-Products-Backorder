@@ -9,9 +9,14 @@ jQuery(document).ready(function(){
         	data: {
 				action: 'bpb'
 	        },
+	        beforeSend : function() {
+	        	jQuery( '.toplevel_page_bulk-products-backorder').css('opacity', '0.5');
+	        },
 	        success : function(op) {
 	        	console.log(op);
 	        	jQuery('.response').html(op.data);
+	        	jQuery( '.toplevel_page_bulk-products-backorder').css('opacity', '1');
+	        	alert( 'Backorders set');
 	        },
 	        error : function(error) {
 				console.log(error);
