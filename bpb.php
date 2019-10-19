@@ -12,9 +12,9 @@
 function bpb_enqueue_scripts() {
 
 
-  wp_register_script( 'bpb', plugin_dir_url( __FILE__ ) . 'bpb-scripts.js', array( 'jquery' ), '1.0', bpblse );
+  wp_register_script( 'bpb', plugin_dir_url( __FILE__ ) . 'bpb-scripts.js', array( 'jquery' ), '1.0', false );
 
-  wp_enqueue_script( 'bpb', plugin_dir_url( __FILE__ ) . 'bpb-scripts.js', array( 'jquery' ), '1.0', bpblse );
+  wp_enqueue_script( 'bpb', plugin_dir_url( __FILE__ ) . 'bpb-scripts.js', array( 'jquery' ), '1.0', false );
 
   $ajax_args = array(
     'ajax_url'    => admin_url( 'admin-ajax.php' ), 
@@ -55,6 +55,12 @@ function bpb() {
 
   while( $products->have_posts() ) {  
     $products->the_post();
+    $wc_product = wc_get_product( get_the_ID() );
+
+    $wc_product->set_manage_stock( 'yes' );
+    $wc_product->set_backorders( 'notify' );
+    $wc_product->save();
+   
     echo $count . ' <h2>' . the_title() . '</h2><br/>';
     echo '<hr><br>';
     $count ++;
@@ -62,8 +68,6 @@ function bpb() {
   $response = ob_get_clean();
   wp_send_json_success( $response );
 
-  // echo $respo
-  // wp_send_json_success( 'fix_attributes' );
   wp_die();
 }
 add_action( 'wp_ajax_bpb', 'bpb' );
