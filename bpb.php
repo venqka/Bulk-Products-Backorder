@@ -40,3 +40,31 @@ function bulk_products_backorder() {
 </div>
 <div class="response"></div>  
 <?php }
+
+function bpb() {
+  
+  $products_args = array(
+    'post_type'     =>  'product',
+    'posts_per_page'  =>  -1
+  );
+
+  $products = NEW WP_Query( $products_args );
+
+  ob_start();
+  $count = 1;
+
+  while( $products->have_posts() ) {  
+    $products->the_post();
+    echo $count . ' <h2>' . the_title() . '</h2><br/>';
+    echo '<hr><br>';
+    $count ++;
+  }
+  $response = ob_get_clean();
+  wp_send_json_success( $response );
+
+  // echo $respo
+  // wp_send_json_success( 'fix_attributes' );
+  wp_die();
+}
+add_action( 'wp_ajax_bpb', 'bpb' );
+// add_action( 'wp_ajax_nopriv_fix_attributes', 'fix_attributes' )
